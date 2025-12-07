@@ -1,0 +1,18 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Debug dbview",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/build/dbview",
+            "args": ["-f", "mynewdb.db", "-n"],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}",
+            "environment": [],
+            "externalConsole": false,
+            "MIMode": "gdb",
+            "preLaunchTask": "CMake: build"
+        }
+    ]
+}
