@@ -2,23 +2,22 @@ cmake_minimum_required(VERSION 3.10)
 project(dbview LANGUAGES C)
 
 set(CMAKE_C_STANDARD 11)
+set(CMAKE_C_STANDARD_REQUIRED ON)
+set(CMAKE_C_EXTENSIONS OFF)
 
-# ----------------------------------------------------------------------
-# Default: Debug build with -g (for VS Code debugging)
-# Use "cmake --build build --config Release" for no debug info
-# ----------------------------------------------------------------------
-add_compile_options(-Wall -Wextra -Werror)
+# Useful warnings (already good, but make it stricter)
+add_compile_options(-Wall -Wextra -Werror -pedantic)
 
-# Debug build gets -g automatically
-set(CMAKE_C_FLAGS_DEBUG "-g")
-# Release build has NO debug info
-set(CMAKE_C_FLAGS_RELEASE "-O3")
+# Debug/Release flags
+set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -g -O0")
+set(CMAKE_C_FLAGS_RELEASE "-O3 -DNDEBUG")
 
-# Default to Debug unless you specify Release
+# Default to Debug if not specified
 if(NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE Debug CACHE STRING "Choose the type of build." FORCE)
 endif()
 
+# Main executable
 add_executable(dbview
     src/main.c
     src/file.c
@@ -27,7 +26,7 @@ add_executable(dbview
 
 target_include_directories(dbview PRIVATE include)
 
-# Your test — deletes old DB first so no "File exists" error
+# Custom test target (delete old DB, create new, add records, list)
 add_custom_target(test
     COMMAND ${CMAKE_COMMAND} -E remove -f ${CMAKE_SOURCE_DIR}/mynewdb.db
     COMMAND ${CMAKE_COMMAND} -E echo "========================================="
@@ -43,11 +42,13 @@ add_custom_target(test
     COMMAND ${CMAKE_COMMAND} -E echo "========================================="
     COMMAND ${CMAKE_COMMAND} -E echo "Test complete!"
     DEPENDS dbview
+    COMMENT "Running dbview test sequence"
+    USES_TERMINAL   # <-- nicer output in terminal
 )
 
-# Clean + delete DB file
+# Clean target that also deletes the test database
 add_custom_target(clean-all
     COMMAND ${CMAKE_COMMAND} --build ${CMAKE_BINARY_DIR} --target clean
     COMMAND ${CMAKE_COMMAND} -E remove -f ${CMAKE_SOURCE_DIR}/mynewdb.db
-    COMMENT "Full clean including database file"
+    COMMENT "Full clean (including database file)"
 )
