@@ -2,7 +2,7 @@
 # cdb
 
 ```bash
-cd ~/cdb
+cd cdb
 rm -rf build mynewdb.db
 cmake -B build -S .
 cmake --build build --target test
