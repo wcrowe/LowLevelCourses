@@ -22,6 +22,8 @@ if (bind(sockfd, (struct sockaddr *)&serverInfo, sizeof(serverInfo)) == -1) {
     perror("Bind failed");
     pclose(sockfd);
     return -1;
+
 }
+printf("Bind successful\n");
   return 0;
 }
