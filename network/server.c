@@ -1,12 +1,14 @@
+#include "server.h"
 #include <netinet/in.h>
 #include <stdio.h>
 #include <sys/socket.h>
-#include "server.h"
+#include <unistd.h>
 
-
+/// @brief 
+/// @return 
 int main ()
 {
-  struct sockaddr_in serverInfo = {0};
+  struct sockaddr_in serverInfo = { 0 };
 
   serverInfo.sin_family = AF_INET;
   serverInfo.sin_addr.s_addr = INADDR_ANY;
@@ -18,12 +20,12 @@ int main ()
       return -1;
     }
   printf ("Socket file descriptor: %d\n", sockfd);
-if (bind(sockfd, (struct sockaddr *)&serverInfo, sizeof(serverInfo)) == -1) {
-    perror("Bind failed");
-    pclose(sockfd);
-    return -1;
-
-}
-printf("Bind successful\n");
+  if (bind (sockfd, (struct sockaddr *)&serverInfo, sizeof (serverInfo)) == -1)
+    {
+      perror ("Bind failed");
+      close (sockfd);
+      return -1;
+    }
+  printf ("Bind successful\n");
   return 0;
 }
